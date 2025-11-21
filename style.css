@@ -5,12 +5,13 @@
     --dark-text: #333;
     --light-bg: #f0f4f8;
     --card-bg: white;
-    --game-bg: #fdf5e6;
-    --accent-blue: #1976d2; /* Biru untuk kartu game */
-    --accent-green: #43a047; /* Hijau untuk jawaban benar/match */
+    --accent-blue: #1976d2;  
+    --accent-green: #43a047;  
+    --accent-purple: #8e24aa;  
+    --accent-orange: #ff9800;  
 }
 
-/* --- Base Styles (Mobile First) --- */
+/* --- Base Styles (Mobile First) */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -20,21 +21,419 @@ body {
     line-height: 1.6;
 }
 
-/* --- Header --- */
+input:focus, button:focus, select:focus {
+    outline: 3px solid var(--accent-blue);
+    outline-offset: 2px;
+}
+
+/* Login Overlay Styling */
+#loginOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#loginForm {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    max-width: 90%;
+    width: 350px;
+    text-align: center;
+}
+
+#loginForm input, #loginForm select, #loginForm button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+#loginForm button {
+    background-color: var(--primary-red);
+    color: white;
+    font-weight: 700;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#loginForm button:hover {
+    background-color: #c62828;
+}
+
+.error-message {
+    color: var(--primary-red);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* --- Header & Profil */
 header {
     background-color: var(--primary-red);
     color: white;
-    padding: 20px 15px;
+    padding: 30px 15px 20px; 
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    position: relative; 
 }
 
 header h1 { margin: 0 0 5px; font-weight: 900; font-size: 2em; }
 header p { font-size: 0.9em; }
 
+/* --- STYLES DROPDOWN PROFIL & LOGOUT --- */
+.dropdown-container {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    z-index: 100;
+    display: none; 
+}
+
+.profile-button {
+    background-color: var(--primary-yellow);
+    color: var(--dark-text);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 700;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s;
+}
+
+.profile-button:hover {
+    background-color: #ffd740; 
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    min-width: 180px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.dropdown-content a {
+    color: var(--primary-red);
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.dropdown-content a:hover {
+    background-color: #fce4e4;
+}
+
+.dropdown-container.active .dropdown-content {
+    display: block;
+}
+
 /* --- Main Container --- */
 main {
     max-width: 900px;
+    margin: 15px auto;
+    padding: 15px;
+    background: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    min-height: 400px; 
+}
+
+/* --- STYLING MENU UTAMA (Tombol Vertikal) */
+#mainMenu {
+    display: flex;
+    flex-direction: column; 
+    gap: 20px;
+    padding: 30px 0;
+}
+
+#mainMenu:not(.active) {
+    display: none;
+}
+
+.main-menu-button {
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 25px 20px;
+    font-size: 1.5em;
+    font-weight: 900;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    text-align: center;
+    letter-spacing: 1px;
+    width: 100%; 
+}
+
+.main-menu-button.kamus { background-color: var(--primary-red); }
+.main-menu-button.info { background-color: var(--accent-green); }
+.main-menu-button.ungkapan { background-color: var(--accent-blue); }
+
+/* --- STYLING KONTEN FITUR --- */
+.feature-content {
+    display: none; 
+    padding: 10px 0;
+}
+
+.feature-content.active {
+    display: block;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    color: var(--primary-red);
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    margin-bottom: 20px;
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+}
+
+/* --- STYLES KHUSUS INFO HARIAN --- */
+.info-card-container { display: grid; gap: 20px; grid-template-columns: 1fr; }
+.info-card { padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s, box-shadow 0.3s; position: relative; overflow: hidden; border: 1px solid #e0e0e0; }
+.info-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); }
+.vocab-card { background: linear-gradient(135deg, #fffde7, var(--primary-yellow)); color: var(--dark-text); }
+.vocab-card h4 { color: var(--accent-orange); border-bottom-color: var(--accent-orange); }
+.vocab-card .reset-button { color: var(--accent-orange); }
+.etymology-card { background: linear-gradient(135deg, #e8f5e9, var(--accent-green)); color: var(--dark-text); }
+.etymology-card h4 { color: var(--accent-blue); border-bottom-color: var(--accent-blue); }
+.etymology-card .reset-button { color: var(--accent-blue); }
+.trivia-card { background: linear-gradient(135deg, #fce4ec, var(--primary-red)); color: var(--dark-text); }
+.trivia-card h4 { color: var(--accent-purple); border-bottom-color: var(--accent-purple); }
+.trivia-card .reset-button { color: var(--accent-purple); }
+.vocab-content strong { display: block; font-size: 1.8em; font-weight: 900; color: var(--primary-red); margin: 5px 0; }
+.reset-button { background: none; border: 1px solid currentColor; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; margin-top: 15px; transition: background-color 0.3s, color 0.3s; }
+.reset-button:hover { background-color: currentColor; color: white !important; }
+
+/* --- STYLES KHUSUS UNGKAPAN --- */
+
+#ungkapanListContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.category-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px 20px;
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.category-button:hover {
+    background-color: #1565c0;
+}
+
+.category-button .icon {
+    font-size: 1.5em;
+    transition: transform 0.3s;
+}
+
+.category-button.active .icon {
+    transform: rotate(90deg);
+}
+
+.expression-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none; 
+    animation: fadeIn 0.5s ease-out;
+    padding: 10px 0;
+    border-left: 5px solid var(--primary-red);
+    margin-top: -5px; 
+    background-color: #fff;
+    border-radius: 0 0 10px 10px;
+}
+
+.expression-list.active {
+    display: block;
+}
+
+.expression-list li {
+    padding: 10px 20px;
+    border-bottom: 1px dashed #eee;
+    font-size: 0.95em;
+    cursor: help;
+    transition: background-color 0.2s;
+}
+
+.expression-list li:hover {
+    background-color: #f5f5f5;
+}
+
+.expression-list li strong {
+    color: var(--primary-red);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- STYLES BARU UNTUK FITUR SEARCH --- */
+.search-section-ui {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+#searchInput {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+#searchInput:focus {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 5px rgba(229, 57, 53, 0.5);
+}
+
+.search-button-ui {
+    background-color: var(--primary-red);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s, transform 0.1s;
+    white-space: nowrap; /* Mencegah Golek! pindah baris */
+}
+
+.search-button-ui:hover {
+    background-color: #c62828;
+    transform: translateY(-1px);
+}
+
+/* Hasil Pencarian */
+.result-container-ui {
+    min-height: 80px;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: var(--card-bg);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.placeholder-ui {
+    color: #999;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Tambah Kata (Add Word) */
+.add-word-container-ui {
+    padding: 20px;
+    border: 2px dashed var(--accent-blue);
+    background-color: #e8eaf6;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.add-word-container-ui h3 {
+    color: var(--accent-blue);
+    margin-top: 0;
+}
+
+.add-word-container-ui input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.add-button-ui {
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.3s;
+}
+
+.add-button-ui:hover {
+    background-color: #1565c0;
+}
+
+/* Tombol Toggle Kamus Besar */
+.toggle-kamus-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--accent-green);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 15px;
+}
+
+.toggle-kamus-btn:hover {
+    background-color: #388e3c;
+    transform: translateY(-1px);
+}
+
+/* Kamus Besar A-Z List Item Styling */
+.word-list { 
+    display: grid;
+    grid-template-columns: 1fr; /* Default Mobile */
+    padding-top: 10px; 
+}
+
+/* Media Query untuk Desktop/Tablet */
+@media (min-width: 768px) {
+    .word-list { grid-template-columns: 1fr 1fr; }
+    .info-card-container { grid-template-columns: repeat(3, 1fr); }
+}    max-width: 900px;
     margin: 15px auto;
     padding: 15px;
     background: var(--card-bg);
@@ -348,4 +747,5 @@ footer {
         max-width: 200px;
         flex-grow: 0;
     }
+
 }
