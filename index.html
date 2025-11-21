@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamus Boso Jowo Arekan 👊</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Global & Root Variables --- */
+        :root {
+            --primary-red: #e53935;
+            --primary-yellow: #fbc02d;
+            --dark-text: #333;
+            --light-bg: #f0f4f8;
+            --card-bg: white;
+            --accent-blue: #1976d2; 
+            --accent-green: #43a047; 
+            --accent-purple: #8e24aa; 
+            --accent-orange: #ff9800; 
+        }
+
+        /* --- Base Styles (Mobile First) */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+        
+        input:focus, button:focus, select:focus {
+            outline: 3px solid var(--accent-blue);
+            outline-offset: 2px;
+        }
+
+        /* Login Overlay Styling */
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #loginForm {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            max-width: 90%;
+            width: 350px;
+            text-align: center;
+        }
+
+        #loginForm input, #loginForm select, #loginForm button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        #loginForm button {
+            background-color: var(--primary-red);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #loginForm button:hover {
+            background-color: #c62828;
+        }
+        
+        .error-message {
+            color: var(--primary-red);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        /* --- Header & Profil */
+        header {
+            background-color: var(--primary-red);
+            color: white;
+            padding: 30px 15px 20px; 
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: relative; 
+        }
+
+        header h1 { margin: 0 0 5px; font-weight: 900; font-size: 2em; }
+        header p { font-size: 0.9em; }
+
+        /* --- STYLES DROPDOWN PROFIL & LOGOUT --- */
+        .dropdown-container {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            z-index: 100;
+            display: none; 
+        }
+
+        .profile-button {
+            background-color: var(--primary-yellow);
+            color: var(--dark-text);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 700;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .profile-button:hover {
+            background-color: #ffd740; 
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            color: var(--primary-red);
+            padding: 10px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #fce4e4;
+        }
+        
+        .dropdown-container.active .dropdown-content {
+            display: block;
+        }
+        
+        /* --- Main Container --- */
+        main {
+            max-width: 900px;
+            margin: 15px auto;
+            padding: 15px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            min-height: 400px; 
+        }
+
+        /* --- STYLING MENU UTAMA (Tombol Vertikal) */
+        #mainMenu {
+            display: flex;
+            flex-direction: column; 
+            gap: 20px;
+            padding: 30px 0;
+        }
+        
+        #mainMenu:not(.active) {
+            display: none;
+        }
+
+        .main-menu-button {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 25px 20px;
+            font-size: 1.5em;
+            font-weight: 900;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            text-align: center;
+            letter-spacing: 1px;
+            width: 100%; 
+        }
+
+        .main-menu-button.kamus { background-color: var(--primary-red); }
+        .main-menu-button.info { background-color: var(--accent-green); }
+        .main-menu-button.ungkapan { background-color: var(--accent-blue); }
+
+        /* --- STYLING KONTEN FITUR --- */
+        .feature-content {
+            display: none; 
+            padding: 10px 0;
+        }
+        
+        .feature-content.active {
+            display: block;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--primary-red);
+            font-weight: 600;
+            font-size: 1em;
+            cursor: pointer;
+            margin-bottom: 20px;
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* --- STYLES KHUSUS INFO HARIAN --- */
+        .info-card-container { display: grid; gap: 20px; grid-template-columns: 1fr; }
+        .info-card { padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s, box-shadow 0.3s; position: relative; overflow: hidden; border: 1px solid #e0e0e0; }
+        .info-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); }
+        .vocab-card { background: linear-gradient(135deg, #fffde7, var(--primary-yellow)); color: var(--dark-text); }
+        .vocab-card h4 { color: var(--accent-orange); border-bottom-color: var(--accent-orange); }
+        .vocab-card .reset-button { color: var(--accent-orange); }
+        .etymology-card { background: linear-gradient(135deg, #e8f5e9, var(--accent-green)); color: var(--dark-text); }
+        .etymology-card h4 { color: var(--accent-blue); border-bottom-color: var(--accent-blue); }
+        .etymology-card .reset-button { color: var(--accent-blue); }
+        .trivia-card { background: linear-gradient(135deg, #fce4ec, var(--primary-red)); color: var(--dark-text); }
+        .trivia-card h4 { color: var(--accent-purple); border-bottom-color: var(--accent-purple); }
+        .trivia-card .reset-button { color: var(--accent-purple); }
+        .vocab-content strong { display: block; font-size: 1.8em; font-weight: 900; color: var(--primary-red); margin: 5px 0; }
+        .reset-button { background: none; border: 1px solid currentColor; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; margin-top: 15px; transition: background-color 0.3s, color 0.3s; }
+        .reset-button:hover { background-color: currentColor; color: white !important; }
+        
+        /* --- STYLES KHUSUS UNGKAPAN --- */
+        
+        #ungkapanListContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .category-button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 15px 20px;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-button:hover {
+            background-color: #1565c0;
+        }
+        
+        .category-button .icon {
+            font-size: 1.5em;
+            transition: transform 0.3s;
+        }
+        
+        .category-button.active .icon {
+            transform: rotate(90deg);
+        }
+        
+        .expression-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: none; 
+            animation: fadeIn 0.5s ease-out;
+            padding: 10px 0;
+            border-left: 5px solid var(--primary-red);
+            margin-top: -5px; 
+            background-color: #fff;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .expression-list.active {
+            display: block;
+        }
+        
+        .expression-list li {
+            padding: 10px 20px;
+            border-bottom: 1px dashed #eee;
+            font-size: 0.95em;
+            cursor: help;
+            transition: background-color 0.2s;
+        }
+        
+        .expression-list li:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .expression-list li strong {
+            color: var(--primary-red);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- STYLES BARU UNTUK FITUR SEARCH --- */
+        .search-section-ui {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        #searchInput {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        #searchInput:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 5px rgba(229, 57, 53, 0.5);
+        }
+
+        .search-button-ui {
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.3s, transform 0.1s;
+            white-space: nowrap; /* Mencegah Golek! pindah baris */
+        }
+
+        .search-button-ui:hover {
+            background-color: #c62828;
+            transform: translateY(-1px);
+        }
+
+        /* Hasil Pencarian */
+        .result-container-ui {
+            min-height: 80px;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .placeholder-ui {
+            color: #999;
+            text-align: center;
+            padding: 10px;
+        }
+
+        /* Tambah Kata (Add Word) */
+        .add-word-container-ui {
+            padding: 20px;
+            border: 2px dashed var(--accent-blue);
+            background-color: #e8eaf6;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .add-word-container-ui h3 {
+            color: var(--accent-blue);
+            margin-top: 0;
+        }
+
+        .add-word-container-ui input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .add-button-ui {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+
+        .add-button-ui:hover {
+            background-color: #1565c0;
+        }
+
+        /* Tombol Toggle Kamus Besar */
+        .toggle-kamus-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 15px;
+        }
+
+        .toggle-kamus-btn:hover {
+            background-color: #388e3c;
+            transform: translateY(-1px);
+        }
+
+        /* Kamus Besar A-Z List Item Styling */
+        .word-list { 
+            grid-template-columns: 1fr; /* Default Mobile */
+            padding-top: 10px; 
+        }
+
+        /* Media Query untuk Desktop/Tablet */
+        @media (min-width: 768px) {
+            .word-list { grid-template-columns: 1fr 1fr; }
+            .info-card-container { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body onload="initializePage()">
+    
+    <div id="loginOverlay">
+        <div id="loginForm">
+            <h2>Sugeng Rawuh, Rek! 👊</h2>
+            <p>Isi data dhisik yo, ben iso diterusno sinau basa Arekan!</p>
+            
+            <div class="error-message" id="loginError"></div>
+
+            <input type="text" id="usernameInput" placeholder="Jenengmu sopo (Nama Panggilan)" required>
+            <input type="date" id="dobInput" required>
+            
+            <label for="understandingLevel" style="display: block; text-align: left; margin: 15px 0 5px; font-weight: 700;">Seberapa paham awakmu?</label>
+            <select id="understandingLevel" required style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 20px;">
+                <option value="" disabled selected>-- Pilih Tingkat Pemahaman --</option>
+                <option value="pemula">Pemula (Baru Belajar)</option>
+                <option value="menengah">Menengah (Lumayan Ngerti)</option>
+                <option value="mahir">Mahir (Wes Paham Pol)</option>
+            </select>
+            
+            <button onclick="handleLogin()">Masuk Kamus!</button>
+        </div>
+    </div>
+    <header>
+        <div id="userProfile" class="dropdown-container">
+            <button id="profileBtn" class="profile-button">
+                 👋 Hai, **Guest**! ▼
+            </button>
+            <div id="profileDropdown" class="dropdown-content">
+                <p id="levelDisplay" style="padding: 10px; font-size: 0.9em; border-bottom: 1px solid #eee; margin: 0;"></p>
+                <a href="#" onclick="handleLogout()">Keluar (Logout) 🚪</a>
+            </div>
+        </div>
+        <h1>KAMUS BOSO JOWO AREKAN 👊</h1>
+        <p>Gak usah sungkan, belajar **boso kasar** Suroboyoan & Jawatimuran kene rek!</p>
+    </header>
+
+    <main>
+        <div id="mainMenu" class="active"> 
+            <button class="main-menu-button kamus" onclick="showFeature('kamus')">
+                📚 1. Golek Kata (Search)
+            </button>
+            <button class="main-menu-button info" onclick="showFeature('info')">
+                📰 2. Info Harian
+            </button>
+            <button class="main-menu-button ungkapan" onclick="showFeature('ungkapan')">
+                💬 3. Ungkapan Populer
+            </button>
+        </div>
+        <section id="kamusContent" class="feature-content">
+            <button class="back-button" onclick="showHome()">⬅ Kembali ke Menu Utama</button>
+            <h2>📚 Golek Kata (Pencarian)</h2>
+            
+            <div class="search-section-ui">
+                <input type="text" id="searchInput" placeholder="Ketik nang kene, misale: 'Jancuk'..." onkeyup="if(event.keyCode == 13) searchWord();">
+                <button onclick="searchWord()" class="search-button-ui">
+                    <span class="icon">🔎</span> Golek!
+                </button>
+            </div>
+
+            <div id="resultContainer" class="result-container-ui">
+                <p class="placeholder-ui">Ayo, coba nggolek kata nang dhuwur!</p>
+            </div>
+            
+            <div id="addWordContainer" class="add-word-container-ui" style="display: none;">
+                <h3>Ups, Kata Baru Ya? Ayo Tambahkan! 📝</h3>
+                <p>Kata <strong><span id="newWordDisplay" style="color:var(--primary-red);"></span></strong> tidak ditemukan. Isi artinya di bawah ini:</p>
+                
+                <input type="text" id="newWordMeaning" placeholder="Ketik arti kata di sini..." required>
+                
+                <button onclick="addNewWord()" class="add-button-ui">
+                    Simpan Kata Baru!
+                </button>
+            </div>
+            
+            <button id="toggleKamusBesarBtn" class="toggle-kamus-btn" onclick="toggleKamusBesar()">
+                Lihat Kamus Besar A-Z (180+ Kata)
+            </button>
+
+            <div id="kamusBesarContainer" style="display: none;">
+                <h2 style="border-bottom: 2px solid var(--primary-yellow); padding-bottom: 5px;">Daftar Kata A-Z Lengkap</h2>
+                <div id="alphabeticalListContainer">
+                    Memuat daftar kata...
+                </div>
+            </div>
+        </section>
+        <section id="infoContent" class="feature-content">
+            <button class="back-button" onclick="showHome()">⬅ Kembali ke Menu Utama</button>
+            <h2>📰 Info & Wawasan Boso Arekan</h2>
+            
+            <div class="info-card-container">
+                <div id="kataHariIni" class="info-card vocab-card">
+                    <h4><span style="font-size: 1.2em;">⭐</span> KATA HARI INI</h4>
+                    <div id="wordOfTheDayContent" class="vocab-content">Memuat...</div>
+                    <button class="reset-button" onclick="populateWordOfTheDay()">Ganti Kata Lain</button>
+                </div>
+                
+                <div id="etymologyInfo" class="info-card etymology-card">
+                    <h4><span style="font-size: 1.2em;">🔍</span> ASAL USUL KATA</h4>
+                    <div id="etymologyContent">Memuat...</div>
+                    <button class="reset-button" onclick="populateEtymologyInfo()">Cari Asal Usul Lain</button>
+                </div>
+                
+                <div id="triviaInfo" class="info-card trivia-card">
+                    <h4><span style="font-size: 1.2em;">💡</span> TRIVIA AREKAN</h4>
+                    <div id="triviaContent" class="trivia-content">Memuat...</div>
+                    <button class="reset-button" onclick="populateTrivia()">Lihat Trivia Lain</button>
+                </div>
+            </div>
+            
+        </section>
+        <section id="ungkapanContent" class="feature-content">
+            <button class="back-button" onclick="showHome()">⬅ Kembali ke Menu Utama</button>
+            <h2>💬 Ungkapan Populer Boso Arekan</h2>
+            <p>Pilih kategori nang ngisor iki, Rek! **(Arahkan kursor ke ungkapan untuk melihat arti)**</p>
+            
+            <div id="ungkapanListContainer">
+                </div>
+        </section>
+        </main>
+
+    <footer>
+        <p>&copy; 2025 Boso Arek-Arek. Wes ngerti, rek?</p>
+    </footer>
+
+    <script>
+        
+        // --- DATA KAMUS LENGKAP (TIDAK DIUBAH) --- 
+        const dictionary = {
+            "Jancuk": "Kata umpatan paling ikonik/serbaguna.", "Cuk": "Singkatan Jancuk.", "Cok": "Varian lain Jancuk.", 
+            "Asu": "Anjing (makian).", "Kirik": "Anak anjing (makian).", "Raimu": "Wajahmu (kasar).", "Ndhas": "Kepala (kasar).",
+            "Mbot": "Sebutan akrab/panggilan (serapan dari Madura).", "Mboh": "Entah/Tidak tahu.", "Dancok": "Variasi Jancuk.",
+            "Aleman": "Manja.", "Ambyar": "Hancur lebur (emosi/perasaan).", "Angkringan": "Warung makan gerobak.",
+            "Adem": "Dingin/Sejuk.", "Arek": "Anak/Orang (panggilan akrab).", "Awakmu": "Kamu/Badanmu.",
+            "Ayo": "Mari/Ajak.", "Babah": "Biarin/Terserah dia.", "Bae": "Saja.", "Balik": "Pulang.", "Bandar": "Pusat Kota.",
+            "Biyen": "Dahulu/Dulu.", "Bondo": "Modal/Harta.", "Bolo": "Teman/Kawan.", "Boso": "Bahasa.", "Bunder": "Bulat.",
+            "Byuh": "Ungkapan kaget/terkejut.", "Cangkruk": "Nongkrong/Berkumpul.", "Cekak": "Pendek/Kurang uang.", 
+            "Ceker": "Kaki (biasanya ayam).", "Cidro": "Ingkar janji.", "Cilik": "Kecil.", "Cuaca": "Cuaca.",
+            "Cangkèk": "Bawaan/Tentengan.", "Dadi": "Menjadi.", "Dalan": "Jalan/Trotoar.", "Dekne": "Dia (singkatan dari Dheweke).",
+            "Dulur": "Saudara.", "Dhuwur": "Tinggi.", "Duit": "Uang.", "Guduk": "Bukan.", "Gak": "Tidak.",
+            "Gabut": "Gaji buta / Bosan.", "Gawean": "Pekerjaan.", "Gatèl": "Gatal/Genit.", "Gedhang": "Pisang.", 
+            "Gilani": "Menjijikkan/Sangat (sering dipakai sebagai penekanan).", "Gremet": "Pelan-pelan sekali.",
+            "Gundul": "Botak.", "Gedhe": "Besar.", "Giro": "Gila/Tidak waras (sering disingkat Gi).", "Gelek": "Cari/Mengais.", 
+            "Halah": "Ungkapan meremehkan/bosan.", "Helo": "Panggilan perhatian/sapaan.","Hadeeh": "Ungkapan kelelahan.",
+            "Iki": "Ini.", "Iku": "Itu.", "Isin": "Malu.", "Itung": "Hitung.", "Iwak": "Ikan/Lauk.", "Icip": "Cicip/Coba sedikit.",
+            "Jajan": "Makanan ringan.", "Jare": "Kata.", "Jèjèr": "Berdampingan.", "Jèngkèl": "Kesal/Jengkel.", "Jès": "Jeans.", 
+            "Jujug": "Langsung menuju/Mampir.", "Jian": "Benar-benar/Sangat (penekanan).", "Joss": "Mantap/Keren.", "Jomblo": "Lajang.",
+            "Kate": "Mau/Akan.", "Karepmu": "Terserah kamu.", "Kècap": "Kecap.", "Kèdhèp": "Berkedip.", "Kèjèm": "Kejam.",
+            "Kèndèl": "Berani.", "Kènyèk": "Sok/Belagu/Pencitraan.", "Kèwèk": "Manja (sama dengan Aleman).", "Kopdar": "Kopi Darat.", 
+            "Kopros": "Jorok, kotor.", "Kuping": "Telinga.", "Kepo": "Ingin tahu (serapan slang nasional).", "Karep": "Kehendak/Mau.",
+            "Kodew": "Wanita (slang, dari 'Wodek' terbalik).", "Kadit": "Tidak (boso walikan Malang).", "Kabeh": "Semua.",
+            "Lali": "Lupa.", "Lek": "Kalau (singkatan dari Nek).", "Lèmpèr": "Piring.", "Lèdhèk": "Penari jalanan.",
+            "Lho": "Ungkapan kaget/menyadari.", "Lholak Lholok": "Bengong/Bingung.", "Lumrah": "Wajar/Biasa.", "Lunga": "Pergi.",
+            "Los": "Lepas/Biarin (serapan dari Los Gak Rewel).", "Lemes": "Lemas/Lemah.", "Loker": "Lokasi Kerja.",
+            "Mangan": "Makan.", "Mblayu": "Melarikan diri.", "Mbelgedhes": "Omong kosong/Bual.", "Medok": "Kental atau pekat.", 
+            "Megilan": "Keren banget/Hebat.", "Mendhek": "Berhenti.", "Mendelik": "Melotot.", "Mèni": "Memberi (kasar).", 
+            "Mlete": "Sok jagoan/Angkuh.", "Modiar": "Mati (makian/doa buruk).", "Mosok": "Masa sih?/Tidak mungkin.", 
+            "Mbaleni": "Mengulangi.", "Mlaku": "Berjalan/Berangkat.", "Moro": "Datang.", "Mung": "Hanya.", "Mrene": "Ke sini.",
+            "Mbesok": "Besok/Kapan-kapan.", "Mbiyen": "Dulu sekali.", "Mangkane": "Makanya.", "Mutung": "Ngambek/Merajuk.",
+            "Mending": "Lebih baik.", "Mokong": "Bandell/Nakal.", "Mateng": "Matang/Selesai.",
+            "Nang": "Ke/Di.", "Ndasku": "Kepalaku.", "Ndelè": "Kedelai.", "Ndelik": "Bersembunyi.", "Ndhengaren": "Tumben.", 
+            "Ngecèl": "Menggoreng tepung.", "Ngècè": "Mengejek/Meledek.", "Ngècès": "Ngiler.", "Ngadem": "Mendinginkan diri.",
+            "Ngamuk": "Marah besar.", "Ngarep": "Mengharap.", "Ngèdèng": "Pamer (agak kasar).", "Ngèyèl": "Keras kepala/Ngotot.",
+            "Nggladhak": "Memaksa/Menghela.", "Nglèmèh": "Berantakan/Ceroboh.", "Ngopi": "Minum kopi/Nongkrong.", 
+            "Ngonthel": "Mengayuh (sepeda).", "Ngrasa": "Merasa.", "Njlungup": "Jatuh terjerembab.", "Nyantai": "Santai/Rileks.", 
+            "Nyampleng": "Sangat pas/Nikmat.", "Nyèkèr": "Tidak pakai alas kaki.", "Nglunjak": "Kurang ajar/Melebihi batas.",
+            "Ndelok": "Lihat/Menonton.", "Nggolek": "Mencari.", "Nggowo": "Membawa.", "Njeblug": "Meledak.", "Njaluk": "Minta.",
+            "Njlèbèh": "Basah/Becek.", "Njalukku": "Permintaan saya.", "Nyekel": "Memegang.", "Ngguyu": "Tertawa.",
+            "Ojok": "Jangan.", "Opo": "Apa.", "Oleh": "Boleh/Dapat.", "Oalah": "Ungkapan menyadari/terkejut.", "Orak": "Tidak.",
+            "Panggah": "Tetap/Masih.", "Pèlèm": "Film.", "Pe'a": "Gila, idiot/Tolol.", "Pisan": "Sekali (banget).", "Piro": "Berapa.", 
+            "Pol": "Penuh/Maksimal.", "Pitek": "Ayam.", "Pedes": "Pedas.", "Prei": "Libur/Tidak kerja.", "Pecel": "Makanan khas.",
+            "Rek": "Panggilan akrab/Kalian (sering di akhir kalimat).", "Ruwet": "Rumit/Kacau.", "Rokok": "Rokok/Tembakau.",
+            "Sangar": "Keren/Gagah.", "Seep": "Selesai/Sudah.", "Semeru": "Nama gunung.", "Sèmpèt": "Kesempatan/Sempat.", 
+            "Sido": "Jadi (terlaksana).", "Sik": "Sebentar.", "Sumpek": "Galau/Pusing.", "Sopo": "Siapa.", "Saiki": "Sekarang.",
+            "Sampeyan": "Anda/Kamu (lebih halus dari awakmu).", "Sumpah": "Janji/Bersumpah.", "Seng": "Yang.",
+            "Thèklèk": "Sandal kayu.", "Tèmbok": "Bodoh/Lambat berpikir.", "Turu": "Tidur (kasar).", "Tuku": "Beli.", 
+            "Teko": "Datang/Dari.", "Tak": "Aku/Saya (awalan kata kerja).", "Titip": "Menitipkan.", "Titen": "Hafal/Cepat ingat.",
+            "Wedangan": "Minuman hangat.", "Wedi": "Takut.", "Warkop": "Warung Kopi.", "Wonge": "Orangnya.", "Wajah": "Wajah (serapan Indonesia).",
+            "Wes": "Sudah (singkatan dari Wis).", "Wae": "Saja (sama dengan Bae).", "Wedi": "Takut.", "Warah": "Mengajari.",
+            "Yo": "Iya/Juga (penekanan)."
+        };
+        
+        // --- DATA INFO HARIAN, TRIVIA, EXPRESSION ---
+        const etymologyData = [
+            { word: "Cangkruk", origin: "Dari kata 'Cangkring' (nama pohon).", detail: "Di Jawa Timur, 'Cangkruk' berarti nongkrong atau berkumpul, konon berasal dari kebiasaan berkumpul di bawah pohon Cangkring. Kata ini adalah salah satu ciri khas pergaulan arek-arek Suroboyo." },
+            { word: "Guduk", origin: "Pemendekan dari 'Dudu Iku'.", detail: "Kata ini secara harfiah berarti 'Bukan Itu'. Dalam percakapan cepat, 'Dudu iku' disingkat menjadi 'Dudu' dan kemudian menjadi 'Guduk' yang artinya sama dengan 'Bukan'." },
+            { word: "Ambyar", origin: "Bahasa Jawa baku, arti literal 'Hancur Berantakan'.", detail: "Kata ini menjadi populer secara nasional berkat lagu-lagu campursari (Didi Kempot) dan kini sering digunakan untuk menggambarkan perasaan yang sangat sedih atau patah hati (hancur lebur emosi)." },
+            { word: "Ndhekne", origin: "Singkatan dari 'Dheweke' (Dia).", detail: "Walaupun 'Dheweke' adalah Jawa ngoko standar, di area Arekan, kependekan 'Ndhekne' (Dia) atau 'Arek' (Mereka) lebih sering dipakai dalam percakapan sehari-hari yang cepat." },
+            { word: "Rek", origin: "Pemendekan dari 'Arek'.", detail: "Kata sapaan yang hampir wajib di Surabaya dan sekitarnya. Ini adalah kependekan dari 'Arek' (anak/orang), digunakan di akhir kalimat sebagai penekanan." },
+            { word: "Gak Sido", origin: "Sintaks Bahasa Jawa.", detail: "Frasa yang berarti 'tidak jadi'. Sering dipakai sebagai alasan cepat untuk membatalkan rencana. Contoh: 'Gak sido budhal aku.' (Saya tidak jadi berangkat)." }
+        ];
+
+        const triviaData = [
+            "Boso Jowo Arekan dikenal sebagai 'Boso Kasar' (Ngoko) dan sangat berbeda dengan Boso Kromo (halus) yang dipakai di Jawa Tengah. Di Jatim, Ngoko dipakai sebagai bahasa sehari-hari antar teman.",
+            "Penggunaan 'Rek' adalah ciri khas paling menonjol dari Boso Arekan. Ini adalah kependekan dari 'Arek' (anak/orang), digunakan di akhir kalimat sebagai penekanan.",
+            "Suroboyoan sering menyerap kata dari bahasa Madura dan sedikit dari bahasa Belanda, menjadikannya dialek yang sangat unik dan cepat.",
+            "Mayoritas kata umpatan (misal Jancuk) dan makian Jawa Timur memiliki variasi yang sangat banyak (Cok, Cuk, Jancuk, Dancok, dll.).",
+            "Salah satu perbedaan utama Jawa Timur dan Jawa Tengah adalah pelafalan vokal 'O' di Jatim cenderung dibaca 'O' tebal (seperti di kata 'Bolo' = teman), sementara di Jateng dibaca 'U' (Bollo = Bulu).",
+            "Frasa 'Yo opo kabare?' (Bagaimana kabarnya?) adalah sapaan standar Arek Suroboyo yang menunjukkan keakraban.",
+            "Kata 'Gedhang' (Pisang) di Jawa Tengah bisa merujuk pada 'Pepaya' (Kates/Gandul), tetapi di Jawa Timur 'Gedhang' selalu berarti pisang.",
+            "Kota Malang seringkali menggunakan dialek 'Boso Walikan' (Bahasa terbalik), seperti 'Oyi' (Iyo / Ya). Tradisi ini tidak dominan di Surabaya."
+        ];
+        
+        const expressionsData = [
+            { id: "cinta", category: "Tresno & Kagum (Cinta & Kekaguman)", icon: "💖", expressions: [{phrase: "Koen iku **nyenengno atiku**.", meaning: "Kamu itu menyenangkan hatiku."}, {phrase: "Aku **seneng pol** karo awakmu.", meaning: "Aku sangat suka dengan dirimu."}, {phrase: "Aku kangen koen ae, **Cok**.", meaning: "Aku kangen kamu saja, Cok (Makian sayang)."}, {phrase: "Koen pancen **mbois**!", meaning: "Kamu memang keren/gagah!"}, {phrase: "Tresnoku nang koen **gak ilang-ilang**.", meaning: "Cintaku padamu tidak hilang-hilang."} ]},
+            { id: "terimakasih", category: "Maturnuwun & Pujian (Terima Kasih & Apresiasi)", icon: "👍", expressions: [{phrase: "**Suwun yo**, wis gelem **nulungi**.", meaning: "Terima kasih ya, sudah mau menolong."}, {phrase: "Usahamu **apik pol!** Tak acungi jempol!", meaning: "Usahamu sangat bagus! Aku beri acungan jempol!"}, {phrase: "Koen iku pancen **ojok lali** (penolong)!", meaning: "Kamu itu memang jangan lupa (orang yang selalu membantu)!"}, {phrase: "Kebaikanmu **gak bakal tak lali**.", meaning: "Kebaikanmu tidak akan aku lupakan."}, {phrase: "**Edan!** Koen **joss**!", meaning: "Gila! Kamu mantap/hebat!"} ]},
+            { id: "motivasi", category: "Semangat & Motivasi (Ayo Gas!)", icon: "🚀", expressions: [{phrase: "**Ojok nganti nyerah!**", meaning: "Jangan sampai menyerah!"}, {phrase: "**Gas!** Semangat maneh, **Rek**!", meaning: "Ayo! Semangat lagi, Rek!"}, {phrase: "Percoyo ae, koen **mesti isok**!", meaning: "Percaya saja, kamu pasti bisa!"}, {phrase: "Gagal iku biasa, **wes!**", meaning: "Gagal itu biasa, sudah!"}, {phrase: "Wes **monggo** maju terus!", meaning: "Sudah, silakan/ayo maju terus!"} ]},
+            { id: "maaf", category: "Nyuwun Ngapunten (Permintaan Maaf & Sesal)", icon: "🙏", expressions: [{phrase: "**Ngapunten** yo, **aku salah**.", meaning: "Mohon maaf ya, aku salah."}, {phrase: "Aku **nyesel pol**, Rek.", meaning: "Aku sangat menyesal, Rek."}, {phrase: "Aku janji **gak mbaleni maneh**.", meaning: "Aku janji tidak mengulangi lagi."}, {phrase: "**Sepurane** teko atiku.", meaning: "Permintaan maafku dari hatiku."}, {phrase: "Aku **ngerti** aku **kliru**.", meaning: "Aku tahu aku keliru/salah."} ]},
+            { id: "alam", category: "Sawah & Alas (Kagum pada Alam)", icon: "🌿", expressions: [{phrase: "Pemandangan iki **neng ati**.", meaning: "Pemandangan ini menyentuh hati."}, {phrase: "Hawane adem **nggilani**.", meaning: "Udaranya dingin sekali (menjijikkan/sangat)."}, {phrase: "**Byuh!** Langite **koyok lukisan**.", meaning: "Wow! Langitnya seperti lukisan."}, {phrase: "Alas (hutan) iku **nyimpen** akeh crito.", meaning: "Hutan itu menyimpan banyak cerita."}, {phrase: "Udara isuk-isuk **seger pol**.", meaning: "Udara pagi-pagi sangat segar."} ]},
+            { id: "bahagia", category: "Seneng Pol! (Kebahagiaan & Sukacita)", icon: "😄", expressions: [{phrase: "Aku seneng **gak karu-karuan!**", meaning: "Aku senang tidak karu-karuan (sangat bahagia)!"}, {phrase: "Iki **dino seru pol**!", meaning: "Ini hari yang sangat seru!"}, {phrase: "Ayo ta **dirayakno** iki!", meaning: "Ayo dong dirayakan ini!"}, {phrase: "Atiku dadi **monggo-monggo**.", meaning: "Hatiku jadi sangat gembira/bersukacita."}, {phrase: "**Jian!** **Mantap!** Iki kudu tak eling-eling.", meaning: "Beneran! Mantap! Ini harus kuingat-ingat."} ]},
+            { id: "bingung", category: "Gak Paham (Keraguan & Kebingungan)", icon: "🤔", expressions: [{phrase: "Aku **ijik bingung** ae.", meaning: "Aku masih bingung saja."}, {phrase: "**Maksude opo** iki, Rek?", meaning: "Maksudnya apa ini, Rek?"}, {phrase: "Onok opo **seh** iki?", meaning: "Ada apa sih ini?"}, {phrase: "Aku **curiga** onok sing **gak beres**.", meaning: "Aku curiga ada yang tidak beres."}, {phrase: "**Jelaske** maneh **disik**!", meaning: "Jelaskan lagi dulu!"} ]},
+            { id: "kesal", category: "Jengkel & Pegel (Kekesalan & Ketidakpuasan)", icon: "😡", expressions: [{phrase: "Iki **nggawe aku pegel** pol!", meaning: "Ini membuatku sangat kesal!"}, {phrase: "Ojok **nggarai perkara** maneh.", meaning: "Jangan membuat masalah lagi."}, {phrase: "Aku **wes ilang kesabaran**.", meaning: "Aku sudah hilang kesabaran."}, {phrase: "Iki **gak podo** karo rencana, **Cok**.", meaning: "Ini tidak sama dengan rencana, Cok."}, {phrase: "**Halah**, **nggatekno** ae!", meaning: "Halah, pedulikan saja/biarkan saja!"} ]},
+            { id: "doa", category: "Mugo-mugo (Harapan & Doa)", icon: "✨", expressions: [{phrase: "**Mugo-mugo** sukses yo!", meaning: "Semoga sukses ya!"}, {phrase: "**Mugo-mugo** mlaku lancar.", meaning: "Semoga berjalan lancar."}, {phrase: "**Mugo-mugo** ketemu maneh.", meaning: "Semoga bertemu lagi."}, {phrase: "Tak **dongakno** sing paling apik.", meaning: "Aku doakan yang terbaik."}, {phrase: "**Mugo-mugo** dinomu **nyenengno**.", meaning: "Semoga harimu menyenangkan."} ]},
+            { id: "seruan", category: "Seruan Khas (Situasional / Slang)", icon: "🗣️", expressions: [{phrase: "**Jiancok!** (Ungkapan Kaget/Terkejut)", meaning: "Kata umpatan kaget/terkejut."}, {phrase: "**Budal!** (Ayo Berangkat!)", meaning: "Ayo berangkat!"}, {phrase: "**Gak usah** **kakean** omong!", meaning: "Tidak usah terlalu banyak bicara!"}, {phrase: "Waduh, **ruwet pol**!", meaning: "Aduh, sangat rumit/kacau!"}, {phrase: "**Gak popo**, **santai** ae, **Rek**.", meaning: "Tidak apa-apa, santai saja, Rek."} ]}
+        ];
+
+
+        // =======================================================
+        // --- FUNGSI TAMPILAN (HOME & FEATURE) ---
+        // =======================================================
+        
+        function showHome() {
+            document.querySelectorAll('.feature-content').forEach(content => content.classList.remove('active'));
+            document.getElementById('mainMenu').classList.add('active');
+        }
+
+        function showFeature(featureId) {
+            document.getElementById('mainMenu').classList.remove('active');
+            
+            document.querySelectorAll('.feature-content').forEach(content => content.classList.remove('active'));
+            
+            const featureElement = document.getElementById(`${featureId}Content`);
+            if (featureElement) {
+                featureElement.classList.add('active');
+            }
+        }
+        
+        function toggleKamusBesar() {
+            const container = document.getElementById('kamusBesarContainer');
+            const button = document.getElementById('toggleKamusBesarBtn');
+            
+            if (container.style.display === 'block') {
+                container.style.display = 'none';
+                button.textContent = `Lihat Kamus Besar A-Z (${Object.keys(dictionary).length}+ Kata)`;
+            } else {
+                container.style.display = 'block';
+                button.textContent = 'Sembunyikan Kamus Besar A-Z';
+            }
+        }
+        
+        function toggleExpressions(categoryId) {
+            const list = document.getElementById(`list-${categoryId}`);
+            const button = document.getElementById(`btn-${categoryId}`);
+            
+            list.classList.toggle('active');
+            button.classList.toggle('active');
+
+            document.querySelectorAll('.expression-list').forEach(otherList => {
+                if (otherList.id !== `list-${categoryId}` && otherList.classList.contains('active')) {
+                    otherList.classList.remove('active');
+                    document.getElementById(`btn-${otherList.id.replace('list-', 'btn-')}`).classList.remove('active');
+                }
+            });
+        }
+
+        // =======================================================
+        // --- FUNGSI LOGIN & INIT ---
+        // =======================================================
+        
+        function getLevelText(level) {
+            switch (level) {
+                case 'pemula': return 'Pemula (Baru Belajar)';
+                case 'menengah': return 'Menengah (Lumayan Ngerti)';
+                case 'mahir': return 'Mahir (Wes Paham Pol)';
+                default: return 'Tidak Diketahui';
+            }
+        }
+
+        function updateProfileDisplay(username, level) {
+            const containerDiv = document.getElementById('userProfile');
+            const profileBtn = document.getElementById('profileBtn');
+            const levelDisplay = document.getElementById('levelDisplay');
+            
+            if (username) {
+                const displayUsername = username.split(' ')[0];
+                
+                profileBtn.innerHTML = `👋 Hai, **${displayUsername}**! ▼`;
+                levelDisplay.innerHTML = `Level: <strong>${getLevelText(level)}</strong>`;
+                containerDiv.style.display = 'block';
+                profileBtn.onclick = toggleProfileDropdown;
+                
+            } else {
+                containerDiv.style.display = 'none';
+            }
+        }
+        
+        function toggleProfileDropdown() {
+            document.getElementById('userProfile').classList.toggle('active');
+        }
+
+        function handleLogin() {
+            const usernameInput = document.getElementById('usernameInput').value.trim();
+            const dobInput = document.getElementById('dobInput').value;
+            const levelInput = document.getElementById('understandingLevel').value; 
+            const loginError = document.getElementById('loginError');
+
+            loginError.textContent = '';
+
+            if (!usernameInput || !dobInput || !levelInput) { 
+                loginError.textContent = 'Semua kolom wajib diisi, Rek!';
+                return;
+            }
+
+            localStorage.setItem('arek_username', usernameInput);
+            localStorage.setItem('arek_dob', dobInput);
+            localStorage.setItem('arek_level', levelInput); 
+
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto'; 
+            
+            updateProfileDisplay(usernameInput, levelInput); 
+
+            loadAllContent();
+        }
+
+        function handleLogout() { 
+            const confirmation = confirm("Yakin arep metu (Keluar), Rek? Sampeyan bakal dimintai login maneh.");
+            if (confirmation) {
+                localStorage.removeItem('arek_username');
+                localStorage.removeItem('arek_dob');
+                localStorage.removeItem('arek_level');
+                
+                window.location.reload(); 
+            }
+        }
+
+        function checkLoginStatus() {
+            const username = localStorage.getItem('arek_username');
+            const level = localStorage.getItem('arek_level'); 
+            const overlay = document.getElementById('loginOverlay');
+            const body = document.body;
+            
+            document.querySelectorAll('.feature-content').forEach(c => c.classList.remove('active'));
+
+            if (username && level) { 
+                overlay.style.display = 'none';
+                body.style.overflow = 'auto';
+                updateProfileDisplay(username, level);
+                loadAllContent();
+                
+            } else {
+                overlay.style.display = 'flex';
+                body.style.overflow = 'hidden'; 
+            }
+        }
+        
+        // =======================================================
+        // --- FUNGSI PENCARIAN & TAMBAH KATA ---
+        // =======================================================
+        
+        function searchWord() {
+            const searchInput = document.getElementById('searchInput').value.trim();
+            const resultContainer = document.getElementById('resultContainer');
+            const addWordContainer = document.getElementById('addWordContainer');
+            
+            resultContainer.innerHTML = '';
+            addWordContainer.style.display = 'none';
+
+            if (!searchInput) {
+                resultContainer.innerHTML = '<p class="placeholder-ui">Ayo, coba nggolek kata nang dhuwur!</p>';
+                return;
+            }
+
+            const normalizedInput = searchInput.charAt(0).toUpperCase() + searchInput.slice(1).toLowerCase();
+            const meaning = dictionary[normalizedInput];
+
+            if (meaning) {
+                resultContainer.innerHTML = `
+                    <div style="padding: 15px; border: 1px solid var(--accent-green); border-radius: 8px; background-color: #e8f5e9;">
+                        <h4 style="color: var(--accent-green); margin: 0 0 5px;">✅ Ketemu!</h4>
+                        <p style="margin: 0;">Kata: <strong>${normalizedInput}</strong></p>
+                        <p style="margin: 5px 0 0;">Artinya: <strong>${meaning}</strong></p>
+                    </div>
+                `;
+            } else {
+                resultContainer.innerHTML = `
+                    <div style="padding: 15px; border: 1px solid var(--primary-red); border-radius: 8px; background-color: #ffebee;">
+                        <h4 style="color: var(--primary-red); margin: 0 0 5px;">❌ Gak Onok! (Tidak Ditemukan)</h4>
+                        <p style="margin: 0;">Kata <strong>${searchInput}</strong> tidak ada di kamus kami.</p>
+                    </div>
+                `;
+                document.getElementById('newWordDisplay').textContent = normalizedInput;
+                document.getElementById('newWordMeaning').value = ''; 
+                addWordContainer.style.display = 'block';
+            }
+        }
+        
+        function addNewWord() {
+            const newWord = document.getElementById('newWordDisplay').textContent;
+            const newMeaning = document.getElementById('newWordMeaning').value.trim();
+            const addWordContainer = document.getElementById('addWordContainer');
+            
+            if (!newMeaning) {
+                alert('Tolong diisi artinya dulu, Rek!');
+                return;
+            }
+
+            dictionary[newWord] = newMeaning;
+            
+            localStorage.setItem('localDictionary', JSON.stringify(dictionary));
+
+            addWordContainer.style.display = 'none';
+            document.getElementById('searchInput').value = newWord;
+            searchWord(); 
+
+            alert(`Kata "${newWord}" dengan arti "${newMeaning}" berhasil ditambahkan ke kamus lokalmu!`);
+            
+            document.getElementById('toggleKamusBesarBtn').textContent = `Lihat Kamus Besar A-Z (${Object.keys(dictionary).length}+ Kata)`;
+            populateAlphabeticalList(); 
+        }
+        
+        function loadLocalDictionary() {
+            const localDict = localStorage.getItem('localDictionary');
+            if (localDict) {
+                Object.assign(dictionary, JSON.parse(localDict));
+            }
+        }
+        
+        // =======================================================
+        // --- FUNGSI KAMUS BESAR & KONTEN INFO ---
+        // =======================================================
+
+        function populateAlphabeticalList() {
+            const container = document.getElementById('alphabeticalListContainer');
+            container.innerHTML = '';
+            
+            const sortedWords = Object.keys(dictionary).sort((a, b) => a.localeCompare(b));
+            
+            if (sortedWords.length === 0) {
+                container.innerHTML = '<p>Kamus kosong, ayo tambahkan kata pertamamu!</p>';
+                return;
+            }
+
+            let html = '<div class="word-list" style="display:grid; gap: 10px;">';
+            
+            sortedWords.forEach(word => {
+                const meaning = dictionary[word];
+                html += `
+                    <div style="background-color: #fff; padding: 10px; border-left: 4px solid var(--primary-red); border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <strong style="color: var(--accent-blue); display: block; margin-bottom: 2px;">${word}</strong>
+                        <span style="font-size: 0.9em;">${meaning}</span>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        function populateWordOfTheDay() {
+            const words = Object.keys(dictionary);
+            if (words.length === 0) {
+                document.getElementById('wordOfTheDayContent').innerHTML = 'Kata tidak tersedia.';
+                return;
+            }
+            const randomIndex = Math.floor(Math.random() * words.length);
+            const word = words[randomIndex];
+            const meaning = dictionary[word];
+            
+            document.getElementById('wordOfTheDayContent').innerHTML = `
+                <p>Boso Arekan:</p>
+                <strong>${word}</strong>
+                <p>Artinya: ${meaning}</p>
+            `;
+        }
+
+        function populateEtymologyInfo() {
+            const randomIndex = Math.floor(Math.random() * etymologyData.length);
+            const data = etymologyData[randomIndex];
+            
+            document.getElementById('etymologyContent').innerHTML = `
+                <p style="font-size: 1.2em; font-weight: 700; color: var(--accent-blue); margin-bottom: 5px;">Kata: ${data.word}</p>
+                <p>Asal: <strong>${data.origin}</strong></p>
+                <p style="font-size: 0.9em; margin: 0;">${data.detail}</p>
+            `;
+        }
+
+        function populateTrivia() {
+            const randomIndex = Math.floor(Math.random() * triviaData.length);
+            const trivia = triviaData[randomIndex];
+            
+            document.getElementById('triviaContent').innerHTML = `<p style="font-style: italic; margin: 0;">"${trivia}"</p>`;
+        }
+        
+        function populateExpressions() {
+            const container = document.getElementById('ungkapanListContainer');
+            container.innerHTML = '';
+
+            expressionsData.forEach(category => {
+                let listHtml = `<ul id="list-${category.id}" class="expression-list">`;
+                category.expressions.forEach(exp => {
+                    listHtml += `<li title="Artinya: ${exp.meaning}">${exp.phrase}</li>`;
+                });
+                listHtml += '</ul>';
+
+                const buttonHtml = `
+                    <button class="category-button" id="btn-${category.id}" onclick="toggleExpressions('${category.id}')">
+                        <span>${category.icon} ${category.category}</span>
+                        <span class="icon">▶</span>
+                    </button>
+                    ${listHtml}
+                `;
+                container.innerHTML += buttonHtml;
+            });
+        }
+        
+        function loadAllContent() {
+            populateAlphabeticalList();
+            populateWordOfTheDay();
+            populateEtymologyInfo();
+            populateTrivia();
+            populateExpressions();
+            showHome();
+        }
+
+        // =======================================================
+        // --- INISIALISASI ---
+        // =======================================================
+
+        function initializePage() {
+            loadLocalDictionary();
+            checkLoginStatus();
+        }
+        
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-button')) {
+                const dropdown = document.getElementById('userProfile');
+                if (dropdown && dropdown.classList.contains('active')) {
+                    dropdown.classList.remove('active');
+                }
+            }
+        }
+
+    </script>
+    </body>
+</html>

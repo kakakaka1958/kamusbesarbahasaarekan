@@ -1,0 +1,351 @@
+/* --- Global & Root Variables --- */
+:root {
+    --primary-red: #e53935;
+    --primary-yellow: #fbc02d;
+    --dark-text: #333;
+    --light-bg: #f0f4f8;
+    --card-bg: white;
+    --game-bg: #fdf5e6;
+    --accent-blue: #1976d2; /* Biru untuk kartu game */
+    --accent-green: #43a047; /* Hijau untuk jawaban benar/match */
+}
+
+/* --- Base Styles (Mobile First) --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--light-bg);
+    color: var(--dark-text);
+    line-height: 1.6;
+}
+
+/* --- Header --- */
+header {
+    background-color: var(--primary-red);
+    color: white;
+    padding: 20px 15px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+header h1 { margin: 0 0 5px; font-weight: 900; font-size: 2em; }
+header p { font-size: 0.9em; }
+
+/* --- Main Container --- */
+main {
+    max-width: 900px;
+    margin: 15px auto;
+    padding: 15px;
+    background: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Tabs Navigation Styling (Responsive) --- */
+.tabs {
+    display: flex;
+    flex-wrap: wrap; /* Izinkan wrap di mobile */
+    justify-content: center;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #ddd;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 10px 10px;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px 8px 0 0;
+    color: #555;
+    font-weight: 600;
+    flex-grow: 1;
+    max-width: 50%; /* Max 2 tombol per baris di mobile */
+    text-align: center;
+    margin: 2px 0;
+}
+
+.tab-button.active {
+    background-color: var(--primary-red);
+    color: white;
+    border-bottom: 4px solid var(--primary-yellow);
+    transform: translateY(1px);
+    font-size: 0.95em;
+}
+
+/* --- General Content/Section Styling --- */
+.tab-content { display: none; padding: 15px 0; }
+.tab-content.active { display: block; }
+
+.feature-card {
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+}
+.feature-card h3 { margin-top: 0; }
+#wordOfTheDayContent strong {
+    font-size: 1.5em;
+    color: var(--primary-red);
+    font-weight: 900;
+}
+
+/* --- Search & Result Styling --- */
+.search-container { display: flex; gap: 10px; margin-bottom: 20px; }
+#searchInput {
+    flex-grow: 1;
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    font-size: 1em;
+}
+.search-container button {
+    background-color: var(--primary-red);
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+}
+.result-container {
+    border: 2px dashed var(--primary-red);
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #ffebee;
+}
+
+/* --- Mode & 3D Button Styling (Kuis & Game) --- */
+.mode-buttons-container { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; }
+
+.mode-button {
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9em;
+    box-shadow: 0 5px 0 #9e9e9e;
+    transition: all 0.1s;
+    flex-grow: 1;
+    max-width: 45%;
+}
+
+.mode-button:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #9e9e9e;
+}
+.mode-button[data-mode="mudah"] { background-color: #a5d6a7; box-shadow: 0 5px 0 #66bb6a; }
+.mode-button[data-mode="sedang"] { background-color: #fff59d; box-shadow: 0 5px 0 #ffeb3b; }
+.mode-button[data-mode="sulit"] { background-color: #ef9a9a; box-shadow: 0 5px 0 #e57373; }
+
+/* --- Kuis & Ungkapan Styling --- */
+#quizContainer {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+.quiz-options button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid var(--accent-blue);
+    background-color: #e3f2fd;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s;
+}
+.quiz-options button:hover {
+    background-color: #bbdefb;
+}
+.correct-answer { background-color: #a5d6a7 !important; border-color: var(--accent-green) !important; }
+.wrong-answer { background-color: #ffcdd2 !important; border-color: var(--primary-red) !important; }
+
+/* --- Ungkapan Context Styling --- */
+.ungkapan-group h4 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: var(--dark-text);
+}
+.ungkapan-item {
+    padding: 10px;
+    border-left: 4px solid;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+.ungkapan-item strong {
+    font-size: 1.1em;
+}
+.ungkapan-context-desc {
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* --- Styling Cocokno Artine (Memory Game) --- */
+#cardGameContainer {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(3, 1fr); /* 3 kolom di mobile */
+    max-width: 100%;
+    margin: 20px auto;
+}
+.game-card {
+    background-color: var(--accent-blue);
+    color: white;
+    padding: 10px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9em;
+    text-align: center;
+    transition: transform 0.3s, background-color 0.3s;
+    box-shadow: 0 3px 0 #1565c0;
+}
+.game-card:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #1565c0;
+}
+.game-card.flipped {
+    background-color: var(--game-bg);
+    color: var(--dark-text);
+    cursor: default;
+    pointer-events: none;
+    box-shadow: none;
+}
+.game-card.matched {
+    background-color: var(--accent-green);
+    color: white;
+    opacity: 0.6;
+    pointer-events: none;
+    box-shadow: 0 0 10px var(--accent-green);
+}
+
+/* --- Styling TTS (Crossword) --- */
+#crosswordGrid {
+    display: inline-grid;
+    border: 2px solid var(--dark-text);
+    margin: 15px auto;
+}
+
+.crossword-cell {
+    width: 25px;
+    height: 25px;
+    border: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8em;
+    font-weight: 700;
+    background-color: #eee;
+    box-sizing: border-box;
+}
+
+.crossword-cell.playable {
+    background-color: white;
+    border: 1px solid #333;
+}
+.crossword-cell.input {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    border: none;
+    outline: none;
+    background-color: #f7f7f7;
+    font-size: 1em;
+    text-transform: uppercase;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#cluesContainer {
+    display: flex;
+    flex-direction: column; /* Tumpuk di mobile */
+    gap: 15px;
+    margin-top: 15px;
+    background-color: #fff8e1;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.clue-list {
+    flex: 1;
+}
+.clue-list h4 { margin-top: 0; color: var(--primary-red); }
+.clue-list ol { padding-left: 20px; font-size: 0.9em; }
+.clue-list li {
+    margin-bottom: 8px;
+    cursor: pointer;
+    padding: 3px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+.clue-list li:hover { background-color: #fce89a; }
+.clue-list li.highlighted { background-color: var(--primary-yellow); font-weight: 700; }
+#timerDisplay {
+    color: var(--accent-blue);
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 15px;
+    margin-top: 20px;
+    font-size: 0.8em;
+    color: #666;
+    background-color: var(--light-bg);
+    border-top: 1px solid #ddd;
+}
+
+/* =======================================================
+   --- MEDIA QUERIES (DESKTOP/TABLET) ---
+   ======================================================= */
+@media (min-width: 768px) {
+    header h1 { font-size: 2.8em; }
+    main { margin: 30px auto; padding: 25px; }
+
+    /* Tabs: 5 tombol per baris */
+    .tab-button {
+        padding: 12px 18px;
+        font-size: 1.05em;
+        max-width: 20%;
+        margin: 0;
+    }
+
+    /* Game: 4 kolom untuk kartu */
+    #cardGameContainer {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: 600px;
+    }
+
+    /* TTS: Sel lebih besar */
+    .crossword-cell {
+        width: 30px;
+        height: 30px;
+        font-size: 1em;
+    }
+
+    /* TTS: Petunjuk berdampingan */
+    #cluesContainer {
+        flex-direction: row;
+        gap: 30px;
+    }
+
+    /* Mode Button: Lebar agar tetap rapi */
+    .mode-button {
+        max-width: 200px;
+        flex-grow: 0;
+    }
+}
