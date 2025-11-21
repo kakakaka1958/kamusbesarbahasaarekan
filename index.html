@@ -6,6 +6,7 @@
     <title>Kamus Boso Jowo Arekan 👊</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     
+    <link rel="stylesheet" href="style.css">
 </head>
 <body onload="initializePage()">
     
@@ -35,6 +36,496 @@
             <button id="profileBtn" class="profile-button">
                 👋 Hai, **Guest**! ▼
             </button>
+            <div id="profileDropdown" class="dropdown-content">
+                <p id="levelDisplay" style="padding: 10px; font-size: 0.9em; border-bottom: 1px solid #eee; margin: 0;"></p>
+                <a href="#" onclick="handleLogout()">Keluar (Logout) 🚪</a>
+            </div>
+        </div>
+        <h1>KAMUS BOSO JOWO AREKAN 👊</h1>
+        <p>Gak usah sungkan, belajar **boso kasar** Suroboyoan & Jawatimuran kene rek!</p>
+    </header>
+
+    <main>
+        <div id="mainMenu" class="active"> 
+            <button class="main-menu-button kamus" onclick="showFeature('kamus')">
+                📚 1. Golek Kata (Search)
+            </button>
+            <button class="main-menu-button info" onclick="showFeature('info')">
+                📰 2. Info Harian
+            </button>
+            <button class="main-menu-button ungkapan" onclick="showFeature('ungkapan')">
+                💬 3. Ungkapan Populer
+            </button>
+        </div>
+        <section id="kamusContent" class="feature-content">
+            <button class="back-button" onclick="showHome()">⬅ Kembali ke Menu Utama</button>
+            <h2>📚 Golek Kata (Pencarian)</h2>
+            
+            <div class="search-section-ui">
+                <input type="text" id="searchInput" placeholder="Ketik nang kene, misale: 'Jancuk'..." onkeyup="if(event.keyCode == 13) searchWord();">
+                <button onclick="searchWord()" class="search-button-ui">
+                    <span class="icon">🔎</span> Golek!
+                </button>
+            </div>
+
+            <div id="resultContainer" class="result-container-ui">
+                <p class="placeholder-ui">Ayo, coba nggolek kata nang dhuwur!</p>
+            </div>
+            
+            <div id="addWordContainer" class="add-word-container-ui" style="display: none;">
+                <h3>Ups, Kata Baru Ya? Ayo Tambahkan! 📝</h3>
+                <p>Kata <strong><span id="newWordDisplay" style="color:var(--primary-red);"></span></strong> tidak ditemukan. Isi artinya di bawah ini:</p>
+                
+                <input type="text" id="newWordMeaning" placeholder="Ketik arti kata di sini..." required>
+                
+                <button onclick="addNewWord()" class="add-button-ui">
+                    Simpan Kata Baru!
+                </button>
+            </div>
+            
+            <button id="toggleKamusBesarBtn" class="toggle-kamus-btn" onclick="toggleKamusBesar()">
+                Lihat Kamus Besar A-Z (180+ Kata)
+            </button>
+
+            <div id="kamusBesarContainer" style="display: none;">
+                <h2 style="border-bottom: 2px solid var(--primary-yellow); padding-bottom: 5px;">Daftar Kata A-Z Lengkap</h2>
+                <div id="alphabeticalListContainer">
+                    Memuat daftar kata...
+                </div>
+            </div>
+        </section>
+        <section id="infoContent" class="feature-content">
+            <button class="back-button" onclick="showHome()">⬅ Kembali ke Menu Utama</button>
+            <h2>📰 Info & Wawasan Boso Arekan</h2>
+            
+            <div class="info-card-container">
+                <div id="kataHariIni" class="info-card vocab-card">
+                    <h4><span style="font-size: 1.2em;">⭐</span> KATA HARI INI</h4>
+                    <div id="wordOfTheDayContent" class="vocab-content">Memuat...</div>
+                    <button class="reset-button" onclick="populateWordOfTheDay()">Ganti Kata Lain</button>
+                </div>
+                
+                <div id="etymologyInfo" class="info-card etymology-card">
+                    <h4><span style="font-size: 1.2em;">🔍</span> ASAL USUL KATA</h4>
+                    <div id="etymologyContent">Memuat...</div>
+                    <button class="reset-button" onclick="populateEtymologyInfo()">Cari Asal Usul Lain</button>
+                </div>
+                
+                <div id="triviaInfo" class="info-card trivia-card">
+                    <h4><span style="font-size: 1.2em;">💡</span> TRIVIA AREKAN</h4>
+                    <div id="triviaContent" class="trivia-content">Memuat...</div>
+                    <button class="reset-button" onclick="populateTrivia()">Lihat Trivia Lain</button>
+                </div>
+            </div>
+            
+        </section>
+        <section id="ungkapanContent" class="feature-content">
+            <button class="back-button" onclick="showHome()">⬅ Kembali ke Menu Utama</button>
+            <h2>💬 Ungkapan Populer Boso Arekan</h2>
+            <p>Pilih kategori nang ngisor iki, Rek! **(Arahkan kursor ke ungkapan untuk melihat arti)**</p>
+            
+            <div id="ungkapanListContainer">
+                </div>
+        </section>
+        </main>
+
+    <footer>
+        <p>&copy; 2025 Boso Arek-Arek. Wes ngerti, rek?</p>
+    </footer>
+
+    <script>
+        // --- DATA KAMUS LENGKAP (TIDAK DIUBAH) --- 
+        const dictionary = {
+            "Jancuk": "Kata umpatan paling ikonik/serbaguna.", "Cuk": "Singkatan Jancuk.", "Cok": "Varian lain Jancuk.", 
+            "Asu": "Anjing (makian).", "Kirik": "Anak anjing (makian).", "Raimu": "Wajahmu (kasar).", "Ndhas": "Kepala (kasar).",
+            "Mbot": "Sebutan akrab/panggilan (serapan dari Madura).", "Mboh": "Entah/Tidak tahu.", "Dancok": "Variasi Jancuk.",
+            "Aleman": "Manja.", "Ambyar": "Hancur lebur (emosi/perasaan).", "Angkringan": "Warung makan gerobak.",
+            "Adem": "Dingin/Sejuk.", "Arek": "Anak/Orang (panggilan akrab).", "Awakmu": "Kamu/Badanmu.",
+            "Ayo": "Mari/Ajak.", "Babah": "Biarin/Terserah dia.", "Bae": "Saja.", "Balik": "Pulang.", "Bandar": "Pusat Kota.",
+            "Biyen": "Dahulu/Dulu.", "Bondo": "Modal/Harta.", "Bolo": "Teman/Kawan.", "Boso": "Bahasa.", "Bunder": "Bulat.",
+            "Byuh": "Ungkapan kaget/terkejut.", "Cangkruk": "Nongkrong/Berkumpul.", "Cekak": "Pendek/Kurang uang.", 
+            "Ceker": "Kaki (biasanya ayam).", "Cidro": "Ingkar janji.", "Cilik": "Kecil.", "Cuaca": "Cuaca.",
+            "Cangkèk": "Bawaan/Tentengan.", "Dadi": "Menjadi.", "Dalan": "Jalan/Trotoar.", "Dekne": "Dia (singkatan dari Dheweke).",
+            "Dulur": "Saudara.", "Dhuwur": "Tinggi.", "Duit": "Uang.", "Guduk": "Bukan.", "Gak": "Tidak.",
+            "Gabut": "Gaji buta / Bosan.", "Gawean": "Pekerjaan.", "Gatèl": "Gatal/Genit.", "Gedhang": "Pisang.", 
+            "Gilani": "Menjijikkan/Sangat (sering dipakai sebagai penekanan).", "Gremet": "Pelan-pelan sekali.",
+            "Gundul": "Botak.", "Gedhe": "Besar.", "Giro": "Gila/Tidak waras (sering disingkat Gi).", "Gelek": "Cari/Mengais.", 
+            "Halah": "Ungkapan meremehkan/bosan.", "Helo": "Panggilan perhatian/sapaan.","Hadeeh": "Ungkapan kelelahan.",
+            "Iki": "Ini.", "Iku": "Itu.", "Isin": "Malu.", "Itung": "Hitung.", "Iwak": "Ikan/Lauk.", "Icip": "Cicip/Coba sedikit.",
+            "Jajan": "Makanan ringan.", "Jare": "Kata.", "Jèjèr": "Berdampingan.", "Jèngkèl": "Kesal/Jengkel.", "Jès": "Jeans.", 
+            "Jujug": "Langsung menuju/Mampir.", "Jian": "Benar-benar/Sangat (penekanan).", "Joss": "Mantap/Keren.", "Jomblo": "Lajang.",
+            "Kate": "Mau/Akan.", "Karepmu": "Terserah kamu.", "Kècap": "Kecap.", "Kèdhèp": "Berkedip.", "Kèjèm": "Kejam.",
+            "Kèndèl": "Berani.", "Kènyèk": "Sok/Belagu/Pencitraan.", "Kèwèk": "Manja (sama dengan Aleman).", "Kopdar": "Kopi Darat.", 
+            "Kopros": "Jorok, kotor.", "Kuping": "Telinga.", "Kepo": "Ingin tahu (serapan slang nasional).", "Karep": "Kehendak/Mau.",
+            "Kodew": "Wanita (slang, dari 'Wodek' terbalik).", "Kadit": "Tidak (boso walikan Malang).", "Kabeh": "Semua.",
+            "Lali": "Lupa.", "Lek": "Kalau (singkatan dari Nek).", "Lèmpèr": "Piring.", "Lèdhèk": "Penari jalanan.",
+            "Lho": "Ungkapan kaget/menyadari.", "Lholak Lholok": "Bengong/Bingung.", "Lumrah": "Wajar/Biasa.", "Lunga": "Pergi.",
+            "Los": "Lepas/Biarin (serapan dari Los Gak Rewel).", "Lemes": "Lemas/Lemah.", "Loker": "Lokasi Kerja.",
+            "Mangan": "Makan.", "Mblayu": "Melarikan diri.", "Mbelgedhes": "Omong kosong/Bual.", "Medok": "Kental atau pekat.", 
+            "Megilan": "Keren banget/Hebat.", "Mendhek": "Berhenti.", "Mendelik": "Melotot.", "Mèni": "Memberi (kasar).", 
+            "Mlete": "Sok jagoan/Angkuh.", "Modiar": "Mati (makian/doa buruk).", "Mosok": "Masa sih?/Tidak mungkin.", 
+            "Mbaleni": "Mengulangi.", "Mlaku": "Berjalan/Berangkat.", "Moro": "Datang.", "Mung": "Hanya.", "Mrene": "Ke sini.",
+            "Mbesok": "Besok/Kapan-kapan.", "Mbiyen": "Dulu sekali.", "Mangkane": "Makanya.", "Mutung": "Ngambek/Merajuk.",
+            "Mending": "Lebih baik.", "Mokong": "Bandell/Nakal.", "Mateng": "Matang/Selesai.",
+            "Nang": "Ke/Di.", "Ndasku": "Kepalaku.", "Ndelè": "Kedelai.", "Ndelik": "Bersembunyi.", "Ndhengaren": "Tumben.", 
+            "Ngecèl": "Menggoreng tepung.", "Ngècè": "Mengejek/Meledek.", "Ngècès": "Ngiler.", "Ngadem": "Mendinginkan diri.",
+            "Ngamuk": "Marah besar.", "Ngarep": "Mengharap.", "Ngèdèng": "Pamer (agak kasar).", "Ngèyèl": "Keras kepala/Ngotot.",
+            "Nggladhak": "Memaksa/Menghela.", "Nglèmèh": "Berantakan/Ceroboh.", "Ngopi": "Minum kopi/Nongkrong.", 
+            "Ngonthel": "Mengayuh (sepeda).", "Ngrasa": "Merasa.", "Njlungup": "Jatuh terjerembab.", "Nyantai": "Santai/Rileks.", 
+            "Nyampleng": "Sangat pas/Nikmat.", "Nyèkèr": "Tidak pakai alas kaki.", "Nglunjak": "Kurang ajar/Melebihi batas.",
+            "Ndelok": "Lihat/Menonton.", "Nggolek": "Mencari.", "Nggowo": "Membawa.", "Njeblug": "Meledak.", "Njaluk": "Minta.",
+            "Njlèbèh": "Basah/Becek.", "Njalukku": "Permintaan saya.", "Nyekel": "Memegang.", "Ngguyu": "Tertawa.",
+            "Ojok": "Jangan.", "Opo": "Apa.", "Oleh": "Boleh/Dapat.", "Oalah": "Ungkapan menyadari/terkejut.", "Orak": "Tidak.",
+            "Panggah": "Tetap/Masih.", "Pèlèm": "Film.", "Pe'a": "Gila, idiot/Tolol.", "Pisan": "Sekali (banget).", "Piro": "Berapa.", 
+            "Pol": "Penuh/Maksimal.", "Pitek": "Ayam.", "Pedes": "Pedas.", "Prei": "Libur/Tidak kerja.", "Pecel": "Makanan khas.",
+            "Rek": "Panggilan akrab/Kalian (sering di akhir kalimat).", "Ruwet": "Rumit/Kacau.", "Rokok": "Rokok/Tembakau.",
+            "Sangar": "Keren/Gagah.", "Seep": "Selesai/Sudah.", "Semeru": "Nama gunung.", "Sèmpèt": "Kesempatan/Sempat.", 
+            "Sido": "Jadi (terlaksana).", "Sik": "Sebentar.", "Sumpek": "Galau/Pusing.", "Sopo": "Siapa.", "Saiki": "Sekarang.",
+            "Sampeyan": "Anda/Kamu (lebih halus dari awakmu).", "Sumpah": "Janji/Bersumpah.", "Seng": "Yang.",
+            "Thèklèk": "Sandal kayu.", "Tèmbok": "Bodoh/Lambat berpikir.", "Turu": "Tidur (kasar).", "Tuku": "Beli.", 
+            "Teko": "Datang/Dari.", "Tak": "Aku/Saya (awalan kata kerja).", "Titip": "Menitipkan.", "Titen": "Hafal/Cepat ingat.",
+            "Wedangan": "Minuman hangat.", "Wedi": "Takut.", "Warkop": "Warung Kopi.", "Wonge": "Orangnya.", "Wajah": "Wajah (serapan Indonesia).",
+            "Wes": "Sudah (singkatan dari Wis).", "Wae": "Saja (sama dengan Bae).", "Wedi": "Takut.", "Warah": "Mengajari.",
+            "Yo": "Iya/Juga (penekanan)."
+        };
+        
+        // --- DATA INFO HARIAN, TRIVIA, EXPRESSION ---
+        const etymologyData = [
+            { word: "Cangkruk", origin: "Dari kata 'Cangkring' (nama pohon).", detail: "Di Jawa Timur, 'Cangkruk' berarti nongkrong atau berkumpul, konon berasal dari kebiasaan berkumpul di bawah pohon Cangkring. Kata ini adalah salah satu ciri khas pergaulan arek-arek Suroboyo." },
+            { word: "Guduk", origin: "Pemendekan dari 'Dudu Iku'.", detail: "Kata ini secara harfiah berarti 'Bukan Itu'. Dalam percakapan cepat, 'Dudu iku' disingkat menjadi 'Dudu' dan kemudian menjadi 'Guduk' yang artinya sama dengan 'Bukan'." },
+            { word: "Ambyar", origin: "Bahasa Jawa baku, arti literal 'Hancur Berantakan'.", detail: "Kata ini menjadi populer secara nasional berkat lagu-lagu campursari (Didi Kempot) dan kini sering digunakan untuk menggambarkan perasaan yang sangat sedih atau patah hati (hancur lebur emosi)." },
+            { word: "Ndhekne", origin: "Singkatan dari 'Dheweke' (Dia).", detail: "Walaupun 'Dheweke' adalah Jawa ngoko standar, di area Arekan, kependekan 'Ndhekne' (Dia) atau 'Arek' (Mereka) lebih sering dipakai dalam percakapan sehari-hari yang cepat." },
+            { word: "Rek", origin: "Pemendekan dari 'Arek'.", detail: "Kata sapaan yang hampir wajib di Surabaya dan sekitarnya. Ini adalah kependekan dari 'Arek' (anak/orang), digunakan di akhir kalimat sebagai penekanan." },
+            { word: "Gak Sido", origin: "Sintaks Bahasa Jawa.", detail: "Frasa yang berarti 'tidak jadi'. Sering dipakai sebagai alasan cepat untuk membatalkan rencana. Contoh: 'Gak sido budhal aku.' (Saya tidak jadi berangkat)." }
+        ];
+
+        const triviaData = [
+            "Boso Jowo Arekan dikenal sebagai 'Boso Kasar' (Ngoko) dan sangat berbeda dengan Boso Kromo (halus) yang dipakai di Jawa Tengah. Di Jatim, Ngoko dipakai sebagai bahasa sehari-hari antar teman.",
+            "Penggunaan 'Rek' adalah ciri khas paling menonjol dari Boso Arekan. Ini adalah kependekan dari 'Arek' (anak/orang), digunakan di akhir kalimat sebagai penekanan.",
+            "Suroboyoan sering menyerap kata dari bahasa Madura dan sedikit dari bahasa Belanda, menjadikannya dialek yang sangat unik dan cepat.",
+            "Mayoritas kata umpatan (misal Jancuk) dan makian Jawa Timur memiliki variasi yang sangat banyak (Cok, Cuk, Jancuk, Dancok, dll.).",
+            "Salah satu perbedaan utama Jawa Timur dan Jawa Tengah adalah pelafalan vokal 'O' di Jatim cenderung dibaca 'O' tebal (seperti di kata 'Bolo' = teman), sementara di Jateng dibaca 'U' (Bollo = Bulu).",
+            "Frasa 'Yo opo kabare?' (Bagaimana kabarnya?) adalah sapaan standar Arek Suroboyo yang menunjukkan keakraban.",
+            "Kata 'Gedhang' (Pisang) di Jawa Tengah bisa merujuk pada 'Pepaya' (Kates/Gandul), tetapi di Jawa Timur 'Gedhang' selalu berarti pisang.",
+            "Kota Malang seringkali menggunakan dialek 'Boso Walikan' (Bahasa terbalik), seperti 'Oyi' (Iyo / Ya). Tradisi ini tidak dominan di Surabaya."
+        ];
+        
+        const expressionsData = [
+            { id: "cinta", category: "Tresno & Kagum (Cinta & Kekaguman)", icon: "💖", expressions: [{phrase: "Koen iku **nyenengno atiku**.", meaning: "Kamu itu menyenangkan hatiku."}, {phrase: "Aku **seneng pol** karo awakmu.", meaning: "Aku sangat suka dengan dirimu."}, {phrase: "Aku kangen koen ae, **Cok**.", meaning: "Aku kangen kamu saja, Cok (Makian sayang)."}, {phrase: "Koen pancen **mbois**!", meaning: "Kamu memang keren/gagah!"}, {phrase: "Tresnoku nang koen **gak ilang-ilang**.", meaning: "Cintaku padamu tidak hilang-hilang."} ]},
+            { id: "terimakasih", category: "Maturnuwun & Pujian (Terima Kasih & Apresiasi)", icon: "👍", expressions: [{phrase: "**Suwun yo**, wis gelem **nulungi**.", meaning: "Terima kasih ya, sudah mau menolong."}, {phrase: "Usahamu **apik pol!** Tak acungi jempol!", meaning: "Usahamu sangat bagus! Aku beri acungan jempol!"}, {phrase: "Koen iku pancen **ojok lali** (penolong)!", meaning: "Kamu itu memang jangan lupa (orang yang selalu membantu)!"}, {phrase: "Kebaikanmu **gak bakal tak lali**.", meaning: "Kebaikanmu tidak akan aku lupakan."}, {phrase: "**Edan!** Koen **joss**!", meaning: "Gila! Kamu mantap/hebat!"} ]},
+            { id: "motivasi", category: "Semangat & Motivasi (Ayo Gas!)", icon: "🚀", expressions: [{phrase: "**Ojok nganti nyerah!**", meaning: "Jangan sampai menyerah!"}, {phrase: "**Gas!** Semangat maneh, **Rek**!", meaning: "Ayo! Semangat lagi, Rek!"}, {phrase: "Percoyo ae, koen **mesti isok**!", meaning: "Percaya saja, kamu pasti bisa!"}, {phrase: "Gagal iku biasa, **wes!**", meaning: "Gagal itu biasa, sudah!"}, {phrase: "Wes **monggo** maju terus!", meaning: "Sudah, silakan/ayo maju terus!"} ]},
+            { id: "maaf", category: "Nyuwun Ngapunten (Permintaan Maaf & Sesal)", icon: "🙏", expressions: [{phrase: "**Ngapunten** yo, **aku salah**.", meaning: "Mohon maaf ya, aku salah."}, {phrase: "Aku **nyesel pol**, Rek.", meaning: "Aku sangat menyesal, Rek."}, {phrase: "Aku janji **gak mbaleni maneh**.", meaning: "Aku janji tidak mengulangi lagi."}, {phrase: "**Sepurane** teko atiku.", meaning: "Permintaan maafku dari hatiku."}, {phrase: "Aku **ngerti** aku **kliru**.", meaning: "Aku tahu aku keliru/salah."} ]},
+            { id: "alam", category: "Sawah & Alas (Kagum pada Alam)", icon: "🌿", expressions: [{phrase: "Pemandangan iki **neng ati**.", meaning: "Pemandangan ini menyentuh hati."}, {phrase: "Hawane adem **nggilani**.", meaning: "Udaranya dingin sekali (menjijikkan/sangat)."}, {phrase: "**Byuh!** Langite **koyok lukisan**.", meaning: "Wow! Langitnya seperti lukisan."}, {phrase: "Alas (hutan) iki **kembange** akeh.", meaning: "Hutan ini bunganya banyak."} ]}
+        ];
+        
+        // --- LOGIC TEMPLATE (Perlu diisi/diperbaiki) ---
+        
+        function initializePage() {
+            // Cek status login dari localStorage
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                document.getElementById('loginOverlay').style.display = 'none';
+                updateProfileDisplay();
+                
+                // Panggil fungsi pengisian data saat halaman dimuat (untuk menu info)
+                populateUngkapan();
+            } else {
+                document.getElementById('loginOverlay').style.display = 'flex';
+                document.getElementById('userProfile').style.display = 'none'; // Sembunyikan profil saat belum login
+            }
+        }
+
+        function updateProfileDisplay() {
+            const username = localStorage.getItem('arekanUsername') || 'Guest';
+            const levelCode = localStorage.getItem('arekanLevel') || 'pemula';
+            let levelDisplay = 'Level: Pemula';
+            
+            if (levelCode === 'menengah') levelDisplay = 'Level: Menengah (Lumayan Ngerti)';
+            if (levelCode === 'mahir') levelDisplay = 'Level: Mahir (Wes Paham Pol)';
+
+            document.getElementById('userProfile').style.display = 'block'; // Tampilkan profil
+            document.getElementById('profileBtn').innerHTML = `👋 Hai, <strong>${username}</strong>! ▼`;
+            document.getElementById('levelDisplay').textContent = levelDisplay;
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('usernameInput').value.trim();
+            const dob = document.getElementById('dobInput').value;
+            const level = document.getElementById('understandingLevel').value;
+            const errorDisplay = document.getElementById('loginError');
+
+            if (!username || !dob || !level) {
+                errorDisplay.textContent = 'Kabeh kudu diisi, Rek! (Nama, Tanggal, dan Level)';
+                return;
+            }
+
+            // Validasi sederhana tanggal lahir harus di masa lalu
+            if (new Date(dob) >= new Date()) {
+                 errorDisplay.textContent = 'Tanggal lahirmu mosok sesuk? Sing bener, Rek!';
+                 return;
+            }
+
+            // Simpan data di localStorage
+            localStorage.setItem('arekanUsername', username);
+            localStorage.setItem('arekanLevel', level);
+            localStorage.setItem('isLoggedIn', 'true');
+
+            // Tutup overlay dan update tampilan
+            document.getElementById('loginOverlay').style.display = 'none';
+            updateProfileDisplay();
+            errorDisplay.textContent = ''; // Hapus pesan error
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('arekanUsername');
+            localStorage.removeItem('arekanLevel');
+            localStorage.removeItem('isLoggedIn');
+            
+            // Tampilkan kembali overlay login
+            document.getElementById('loginOverlay').style.display = 'flex';
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('profileDropdown').style.display = 'none'; // Pastikan dropdown tertutup
+        }
+
+        // Dropdown Profile Toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileBtn = document.getElementById('profileBtn');
+            const profileDropdown = document.getElementById('profileDropdown');
+            const dropdownContainer = document.getElementById('userProfile');
+
+            if (profileBtn) {
+                profileBtn.addEventListener('click', (event) => {
+                    dropdownContainer.classList.toggle('active');
+                    event.stopPropagation(); // Mencegah klik menyebar ke document
+                });
+            }
+
+            // Tutup dropdown jika klik di luar
+            document.addEventListener('click', (event) => {
+                if (dropdownContainer.classList.contains('active') && !dropdownContainer.contains(event.target)) {
+                    dropdownContainer.classList.remove('active');
+                }
+            });
+        });
+
+        function showFeature(featureId) {
+            // Sembunyikan semua konten fitur dan menu utama
+            document.getElementById('mainMenu').classList.remove('active');
+            document.querySelectorAll('.feature-content').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Tampilkan fitur yang diminta
+            document.getElementById(featureId + 'Content').classList.add('active');
+
+            // Logic khusus untuk fitur Info Harian (memuat konten acak)
+            if (featureId === 'info') {
+                 populateWordOfTheDay();
+                 populateEtymologyInfo();
+                 populateTrivia();
+            }
+        }
+
+        function showHome() {
+            document.querySelectorAll('.feature-content').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById('mainMenu').classList.add('active');
+            // Reset input pencarian saat kembali ke home
+            document.getElementById('searchInput').value = '';
+            document.getElementById('resultContainer').innerHTML = '<p class="placeholder-ui">Ayo, coba nggolek kata nang dhuwur!</p>';
+            document.getElementById('addWordContainer').style.display = 'none';
+        }
+
+        let currentSearchWord = ''; // Variable untuk menyimpan kata yang dicari
+
+        function searchWord() {
+            const input = document.getElementById('searchInput').value.trim();
+            currentSearchWord = input; // Simpan kata yang dicari
+            const resultContainer = document.getElementById('resultContainer');
+            const addWordContainer = document.getElementById('addWordContainer');
+            const normalizedInput = input.toLowerCase();
+
+            resultContainer.innerHTML = '';
+            addWordContainer.style.display = 'none';
+
+            if (input === '') {
+                resultContainer.innerHTML = '<p class="placeholder-ui">Ketik dhisik kata sing arep digolek, Rek!</p>';
+                return;
+            }
+
+            // Menggabungkan dictionary dan userAddedWords (asumsi userAddedWords ada jika diimplementasikan)
+            const allWords = dictionary; // Saat ini hanya pakai dictionary bawaan
+
+            // Cari kata, mengabaikan huruf besar/kecil
+            let foundMeaning = null;
+            let foundWord = null;
+
+            for (const key in allWords) {
+                if (key.toLowerCase() === normalizedInput) {
+                    foundMeaning = allWords[key];
+                    foundWord = key;
+                    break;
+                }
+            }
+            
+            if (foundMeaning) {
+                resultContainer.innerHTML = `
+                    <h3>Hasil Golek Kata: <strong>${foundWord}</strong></h3>
+                    <p><strong>Arti:</strong> ${foundMeaning}</p>
+                    <p style="font-size: 0.9em; color: var(--accent-green); margin-top: 15px;">**Kata iki wes ono nang kamus!**</p>
+                `;
+            } else {
+                resultContainer.innerHTML = `
+                    <p class="placeholder-ui" style="color: var(--primary-red); font-weight: 600;">Kata **"${input}"** gak ketemu nang kamus.</p>
+                `;
+                // Tampilkan form tambah kata baru
+                document.getElementById('newWordDisplay').textContent = input;
+                addWordContainer.style.display = 'block';
+            }
+        }
+        
+        function addNewWord() {
+             const newWord = document.getElementById('newWordDisplay').textContent.trim();
+             const meaning = document.getElementById('newWordMeaning').value.trim();
+             
+             if (meaning) {
+                 // **CATATAN PENTING:** // Implementasi JS di sini tidak menyimpan secara permanen (hanya ke memori dictionary)
+                 // Untuk persistensi, perlu local storage atau backend (Lihat Usulan Perbaikan #2)
+                 dictionary[newWord] = meaning; // Menambahkan ke dictionary (sementara)
+
+                 document.getElementById('resultContainer').innerHTML = `
+                    <h3>✅ Kata **${newWord}** berhasil ditambahkan ke kamus! (Sesi ini)</h3>
+                    <p><strong>Arti:</strong> ${meaning}</p>
+                 `;
+                 document.getElementById('addWordContainer').style.display = 'none';
+                 document.getElementById('newWordMeaning').value = '';
+             } else {
+                 alert("Artine kudu diisi, Rek!");
+             }
+        }
+        
+        // Fungsi pengisian konten acak untuk Info Harian (Lihat Usulan Perbaikan #4)
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function populateWordOfTheDay() {
+            const allWords = Object.keys(dictionary);
+            const word = getRandomElement(allWords);
+            const meaning = dictionary[word];
+
+            document.getElementById('wordOfTheDayContent').innerHTML = `
+                <p>Kata Arekan: <strong>${word}</strong></p>
+                <p>Arti dalam Bahasa Indonesia:</p>
+                <p style="font-size: 1.1em; color: var(--accent-orange); font-style: italic;">"${meaning}"</p>
+            `;
+        }
+
+        function populateEtymologyInfo() {
+            const data = getRandomElement(etymologyData);
+            document.getElementById('etymologyContent').innerHTML = `
+                <p>Kata **${data.word}** (Asal Usul: **${data.origin}**)</p>
+                <p style="font-size: 0.9em;">**Detail:** ${data.detail}</p>
+            `;
+        }
+
+        function populateTrivia() {
+            const data = getRandomElement(triviaData);
+            document.getElementById('triviaContent').innerHTML = `
+                <p style="font-size: 1.1em; font-style: italic;">"${data}"</p>
+            `;
+        }
+
+        // Fungsi untuk Ungkapan Populer
+        function populateUngkapan() {
+            const container = document.getElementById('ungkapanListContainer');
+            container.innerHTML = '';
+            
+            expressionsData.forEach(cat => {
+                // Buat tombol kategori
+                const buttonHtml = `
+                    <button class="category-button" data-category-id="${cat.id}" onclick="toggleExpressionList('${cat.id}')">
+                        ${cat.icon} ${cat.category} 
+                        <span class="icon">▶</span>
+                    </button>
+                `;
+
+                // Buat daftar ungkapan
+                let listItems = '';
+                cat.expressions.forEach(exp => {
+                    // Menggunakan title attribute untuk tooltip (arti)
+                    listItems += `<li title="${exp.meaning}">${exp.phrase}</li>`;
+                });
+                
+                const listHtml = `
+                    <ul id="list-${cat.id}" class="expression-list">
+                        ${listItems}
+                    </ul>
+                `;
+                
+                container.innerHTML += buttonHtml;
+                container.innerHTML += listHtml;
+            });
+        }
+
+        function toggleExpressionList(categoryId) {
+            const button = document.querySelector(`.category-button[data-category-id="${categoryId}"]`);
+            const list = document.getElementById(`list-${categoryId}`);
+            
+            // Toggle kelas 'active' pada tombol dan daftar
+            if (list.classList.contains('active')) {
+                list.classList.remove('active');
+                button.classList.remove('active');
+            } else {
+                // Opsional: Tutup yang lain saat membuka yang baru
+                document.querySelectorAll('.expression-list.active').forEach(ul => ul.classList.remove('active'));
+                document.querySelectorAll('.category-button.active').forEach(btn => btn.classList.remove('active'));
+                
+                list.classList.add('active');
+                button.classList.add('active');
+            }
+        }
+        
+        // Fungsi Toggle Kamus Besar (A-Z) - Perlu diisi
+        function toggleKamusBesar() {
+            const container = document.getElementById('kamusBesarContainer');
+            const button = document.getElementById('toggleKamusBesarBtn');
+            
+            if (container.style.display === 'none') {
+                // Memuat daftar kata saat dibuka
+                populateKamusBesar(); 
+                container.style.display = 'block';
+                button.textContent = 'Sembunyikan Kamus Besar A-Z';
+            } else {
+                container.style.display = 'none';
+                button.textContent = 'Lihat Kamus Besar A-Z (180+ Kata)';
+            }
+        }
+        
+        function populateKamusBesar() {
+             const allWords = dictionary; 
+             const sortedWords = Object.keys(allWords).sort();
+             const container = document.getElementById('alphabeticalListContainer');
+             
+             let html = '<div class="word-list">';
+             sortedWords.forEach(word => {
+                const meaning = allWords[word];
+                html += `
+                     <div style="padding: 5px 0; border-bottom: 1px dashed #eee;">
+                        <strong>${word}</strong>: ${meaning}
+                     </div>
+                 `;
+             });
+             html += '</div>';
+
+             container.innerHTML = html;
+        }
+
+    </script>
+</body>
+</html>            </button>
             <div id="profileDropdown" class="dropdown-content">
                 <p id="levelDisplay" style="padding: 10px; font-size: 0.9em; border-bottom: 1px solid #eee; margin: 0;"></p>
                 <a href="#" onclick="handleLogout()">Keluar (Logout) 🚪</a>
@@ -2199,4 +2690,5 @@
 </body>
 
 </html>
+
 
